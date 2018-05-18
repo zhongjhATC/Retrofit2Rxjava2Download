@@ -11,7 +11,6 @@ import com.zhongjh.retrofitdownloadlib.http.DownloadListener;
 
 import java.io.File;
 
-// https://github.com/lizhangqu/CoreProgress 另一个不同的很好例子
 public class MainActivity extends AppCompatActivity implements DownloadListener {
 
     private TextView tv;
@@ -23,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements DownloadListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv = findViewById(R.id.tv_test);
-        url = "http://www.huoyunji.com:8084/api/driver/order/count/downloads.do?driverId=54ed0af08938455388c15867adad653d&dateScopeType=2";
+        url = "http://assets.geilicdn.com/channelapk/1000n_shurufa_1.9.6.apk";
     }
 
     public void download(View view) {
