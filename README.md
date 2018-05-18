@@ -26,3 +26,68 @@ dependencies {
 	        implementation 'com.github.zhongjhATC:Retrofit2Rxjava2Download:1.0.0'
 	}
 ```
+
+例子
+
+```
+public class MainActivity extends AppCompatActivity implements DownloadListener {
+
+
+    // 初始化
+    private DownloadHelper mDownloadHelper = new DownloadHelper("http://www.baseurl.com", this);
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        url = "http://assets.geilicdn.com/channelapk/1000n_shurufa_1.9.6.apk";
+    }
+
+    public void download(View view) {
+        // 调用方法
+        mDownloadHelper.downloadFile(url, Environment.getExternalStorageDirectory() + File.separator + "/apk", "aaa.xlsx");
+    }
+
+    @Override
+    protected void onDestroy() {
+        // 销毁
+        mDownloadHelper.dispose();
+        super.onDestroy();
+    }
+
+    /**
+     * 加载前
+     */
+    @Override
+    public void onStartDownload() {
+
+    }
+
+    /**
+     * 加载中
+     */
+    @Override
+    public void onProgress(int progress) {
+        tv.setText("下载中 : " + progress + "%");
+    }
+
+    /**
+     * 加载后
+     *
+     * @param file 文件
+     */
+    @Override
+    public void onFinishDownload(File file) {
+        tv.setText("下载成功。\n" + file.getAbsolutePath());
+    }
+
+    /**
+     * 加载失败
+     *
+     * @param ex 异常
+     */
+    @Override
+    public void onFail(Throwable ex) {
+        tv.setText("下载失败 : " + ex.getLocalizedMessage());
+    }
+
+}
+```
