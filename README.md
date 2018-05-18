@@ -32,12 +32,15 @@ dependencies {
 ```
 public class MainActivity extends AppCompatActivity implements DownloadListener {
 
+    ```````
+    ```````
 
     // 初始化
     private DownloadHelper mDownloadHelper = new DownloadHelper("http://www.baseurl.com", this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ```````
         url = "http://assets.geilicdn.com/channelapk/1000n_shurufa_1.9.6.apk";
     }
 
