@@ -1,4 +1,5 @@
 这是一个由retrofit2和rxjava2一起搭配的网络框架
+
 1.有些demo是用event来传递的，但我认为能尽量不用event的场合最好能不用（也不是说event不好，至于为什么不用event的原因可以搜索相关文章），所以这个demo是用handle来处理。
 
 2.有进度的回调下载。
