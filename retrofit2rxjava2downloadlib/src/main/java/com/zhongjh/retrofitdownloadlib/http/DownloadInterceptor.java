@@ -9,11 +9,12 @@ import okhttp3.Response;
 
 /**
  * 处理数据
- * Created by zhongjh on 2018/5/18.
+ * @author zhongjh
+ * @date 2018/5/18
  */
 public class DownloadInterceptor implements Interceptor {
 
-    private DownloadListener downloadListener;
+    private final DownloadListener downloadListener;
 
     DownloadInterceptor(DownloadListener downloadListener) {
         this.downloadListener = downloadListener;

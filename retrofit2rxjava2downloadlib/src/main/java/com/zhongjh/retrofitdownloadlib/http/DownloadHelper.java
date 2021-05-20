@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -17,17 +18,27 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 /**
  * 下载的工具
- * Created by zhongjh on 2018/5/18.
+ *
+ * @author zhongjh
+ * @date 2018/5/18
  */
 public class DownloadHelper {
 
-    // 超时15s
+    /**
+     * 超时15s
+     */
     private static final int DEFAULT_TIMEOUT = 15;
-    // 网络工具retrofit
-    private Retrofit retrofit;
-    // 下载进度、完成、失败等的回调事件
-    private DownloadListener mDownloadListener;
-    // 清除线程需要用到的
+    /**
+     * 网络工具retrofit
+     */
+    private final Retrofit retrofit;
+    /**
+     * 下载进度、完成、失败等的回调事件
+     */
+    private final DownloadListener mDownloadListener;
+    /**
+     * 清除线程需要用到的
+     */
     private Disposable disposable;
 
     /**
@@ -64,19 +75,21 @@ public class DownloadHelper {
         mDownloadListener.onStartDownload();
         retrofit.create(DownloadService.class)
                 .download(url)
-                .subscribeOn(Schedulers.io())//请求网络 在调度者的io线程
-                .observeOn(Schedulers.io()) //指定线程保存文件
+                // 请求网络 在调度者的io线程
+                .subscribeOn(Schedulers.io())
+                // 指定线程保存文件
+                .observeOn(Schedulers.io())
                 .observeOn(Schedulers.computation())
                 .map(new Function<ResponseBody, File>() {
                     @Override
-                    public File apply(ResponseBody responseBody) throws Exception {
+                    public File apply(@NonNull ResponseBody responseBody) throws Exception {
                         return saveFile(responseBody.byteStream(), destDir, fileName);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseDownloadObserver<File>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void onSubscribe(@NonNull Disposable d) {
                         disposable = d;
                     }
 
@@ -131,12 +144,16 @@ public class DownloadHelper {
 
         } finally {
             try {
-                if (is != null) is.close();
+                if (is != null) {
+                    is.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                if (fos != null) fos.close();
+                if (fos != null) {
+                    fos.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

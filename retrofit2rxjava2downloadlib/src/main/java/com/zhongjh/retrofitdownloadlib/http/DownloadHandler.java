@@ -11,10 +11,15 @@ import android.os.Message;
  */
 class DownloadHandler {
 
-    // handle ,处理ui方面的onProgress
+    /**
+     * handle ,处理ui方面的onProgress
+     */
     private Handler mHandler;
 
-    private static final int WHAT_UPDATE = 0x01; // 更新进度
+    /**
+     * 更新进度
+     */
+    private static final int WHAT_UPDATE = 0x01;
     private static final String PROGRESS = "progress";
 
     private DownloadListener mDownloadListener;
@@ -37,17 +42,13 @@ class DownloadHandler {
                         if (msg == null) {
                             return;
                         }
-                        switch (msg.what) {
-                            case WHAT_UPDATE:
-                                Bundle updateData = msg.getData();
-                                if (updateData == null) {
-                                    return;
-                                }
-                                int progress = updateData.getInt(PROGRESS);
-                                downloadListener.onProgress(progress);
-                                break;
-                            default:
-                                break;
+                        if (msg.what == WHAT_UPDATE) {
+                            Bundle updateData = msg.getData();
+                            if (updateData == null) {
+                                return;
+                            }
+                            int progress = updateData.getInt(PROGRESS);
+                            downloadListener.onProgress(progress);
                         }
                     }
                 };
