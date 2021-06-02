@@ -58,6 +58,7 @@ class DownloadHandler {
 
     /**
      * 传递进度给ui
+     *
      * @param progress 进度，100为满
      */
     void onProgress(int progress) {
@@ -68,7 +69,7 @@ class DownloadHandler {
         Message message = mHandler.obtainMessage();
         message.what = WHAT_UPDATE;
         Bundle data = new Bundle();
-        data.putInt(PROGRESS,  progress);
+        data.putInt(PROGRESS, progress);
         message.setData(data);
         mHandler.sendMessage(message);
     }

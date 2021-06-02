@@ -44,10 +44,9 @@ public class DownloadHelper {
     /**
      * 构造函数初始化
      *
-     * @param baseUrl  基础url，可以给任意网址，不能给""
      * @param listener 回调函数
      */
-    public DownloadHelper(String baseUrl, DownloadListener listener) {
+    public DownloadHelper(DownloadListener listener) {
         this.mDownloadListener = listener;
         DownloadInterceptor mInterceptor = new DownloadInterceptor(listener);
         OkHttpClient httpClient = new OkHttpClient.Builder()
@@ -58,7 +57,7 @@ public class DownloadHelper {
                 .build();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
+                .baseUrl("https://www.baseurl.com/")
                 .client(httpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();

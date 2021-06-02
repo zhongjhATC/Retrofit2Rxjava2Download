@@ -29,7 +29,7 @@ allprojects {
  
 ```
 dependencies {
-	        implementation 'com.github.zhongjhATC:Retrofit2Rxjava2Download:1.0.1'
+	        implementation 'com.github.zhongjhATC:Retrofit2Rxjava2Download:1.0.2'
 	}
 ```
 

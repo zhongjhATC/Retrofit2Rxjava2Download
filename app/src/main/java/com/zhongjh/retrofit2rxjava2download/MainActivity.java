@@ -1,6 +1,7 @@
 package com.zhongjh.retrofit2rxjava2download;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -21,27 +22,33 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements DownloadListener {
 
-    private final int GET_PERMISSION_REQUEST = 100; //权限申请自定义码
+    /**
+     * 权限申请自定义码
+     */
+    private final int GET_PERMISSION_REQUEST = 100;
 
     private TextView tv;
     private String url;
 
-    // 初始化
-    private DownloadHelper mDownloadHelper = new DownloadHelper("http://www.baseurl.com", this);
+    /**
+     * 初始化
+     */
+    private final DownloadHelper mDownloadHelper = new DownloadHelper( this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv = findViewById(R.id.tv_test);
-        url = "https://www.baidu.com/img/bd_logo1.png";
+        url = "https://img.huoyunji.com/video_20190221105749_Android_31228";
     }
 
     public void download(View view) {
         boolean isOk = getPermissions();
-        if (isOk)
+        if (isOk) {
             // 调用方法
             mDownloadHelper.downloadFile(url, Environment.getExternalStorageDirectory() + File.separator + "/apk/aa/bb", "aaa.png");
+        }
     }
 
     @TargetApi(23)
@@ -52,8 +59,8 @@ public class MainActivity extends AppCompatActivity implements DownloadListener 
             int size = 0;
             if (grantResults.length >= 1) {
                 int writeResult = grantResults[0];
-                //读写内存权限
-                boolean writeGranted = writeResult == PackageManager.PERMISSION_GRANTED;//读写内存权限
+                // 读写内存权限
+                boolean writeGranted = writeResult == PackageManager.PERMISSION_GRANTED;
                 if (!writeGranted) {
                     size++;
                 }
@@ -104,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements DownloadListener 
     /**
      * 加载中
      */
+    @SuppressLint("SetTextI18n")
     @Override
     public void onProgress(int progress) {
         tv.setText("下载中 : " + progress + "%");
@@ -114,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements DownloadListener 
      *
      * @param file 文件
      */
+    @SuppressLint("SetTextI18n")
     @Override
     public void onFinishDownload(File file) {
         tv.setText("下载成功。\n" + file.getAbsolutePath());
@@ -124,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements DownloadListener 
      *
      * @param ex 异常
      */
+    @SuppressLint("SetTextI18n")
     @Override
     public void onFail(Throwable ex) {
         tv.setText("下载失败 : " + ex.getLocalizedMessage());
