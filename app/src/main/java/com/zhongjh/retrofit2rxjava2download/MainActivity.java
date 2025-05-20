@@ -1,26 +1,28 @@
 package com.zhongjh.retrofit2rxjava2download;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zhongjh.retrofitdownloadlib.http.DownloadHelper;
-import com.zhongjh.retrofitdownloadlib.http.DownloadListener;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.zhongjh.retrofitdownloadlib.http.DownloadInfo;
+import com.zhongjh.retrofitdownloadlib.http.DownloadProgressHandler;
+import com.zhongjh.retrofitdownloadlib.http.FileDownloader;
 
 import java.io.File;
 
-public class MainActivity extends AppCompatActivity implements DownloadListener {
+public class MainActivity extends AppCompatActivity {
 
     /**
      * 权限申请自定义码
@@ -30,24 +32,40 @@ public class MainActivity extends AppCompatActivity implements DownloadListener 
     private TextView tv;
     private String url;
 
-    /**
-     * 初始化
-     */
-    private final DownloadHelper mDownloadHelper = new DownloadHelper( this);
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv = findViewById(R.id.tv_test);
-        url = "https://img.huoyunji.com/video_20190221105749_Android_31228";
+        url = "https://d.ifengimg.com/w1125_q90_webp/img1.ugc.ifeng.com/newugc/20190119/10/wemedia/ed80429fb44c8b298fb72aab635b689f2de75ce4_size2426_w3000_h2000.JPG";
     }
 
     public void download(View view) {
         boolean isOk = getPermissions();
         if (isOk) {
-            // 调用方法
-            mDownloadHelper.downloadFile(url, Environment.getExternalStorageDirectory() + File.separator + "/apk/aa/bb", "aaa.png");
+            FileDownloader.downloadFile(url, getApplication().getExternalCacheDir() + File.separator + "/apk/aa/bb",
+                    "aaa.png", new DownloadProgressHandler() {
+
+                        @Override
+                        public void onProgress(DownloadInfo downloadInfo) {
+                            int progress = downloadInfo.getProgress();
+                            long fileSize = downloadInfo.getFileSize();
+                            long speed = downloadInfo.getSpeed();
+                            long usedTime = downloadInfo.getUsedTime();
+                            tv.setText("下载中 : " + progress + "%" + " 文件大小:" + FileUtils.formatFileSize(fileSize) + " 平均速度：" + FileUtils.formatFileSize(speed) + "/s" + " 下载时间：" + FileUtils.formatTime(usedTime));
+                        }
+
+                        @Override
+                        public void onCompleted(File file) {
+                            Toast.makeText(MainActivity.this, "下载完成：" + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Toast.makeText(MainActivity.this, "下载文件异常:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.e("MainActivity", e.getMessage(), e);
+                        }
+                    });
         }
     }
 
@@ -95,48 +113,8 @@ public class MainActivity extends AppCompatActivity implements DownloadListener 
 
     @Override
     protected void onDestroy() {
-        // 销毁
-        mDownloadHelper.dispose();
+        FileDownloader.cancelDownload();
         super.onDestroy();
-    }
-
-    /**
-     * 加载前
-     */
-    @Override
-    public void onStartDownload() {
-
-    }
-
-    /**
-     * 加载中
-     */
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onProgress(int progress) {
-        tv.setText("下载中 : " + progress + "%");
-    }
-
-    /**
-     * 加载后
-     *
-     * @param file 文件
-     */
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onFinishDownload(File file) {
-        tv.setText("下载成功。\n" + file.getAbsolutePath());
-    }
-
-    /**
-     * 加载失败
-     *
-     * @param ex 异常
-     */
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onFail(Throwable ex) {
-        tv.setText("下载失败 : " + ex.getLocalizedMessage());
     }
 
 }
