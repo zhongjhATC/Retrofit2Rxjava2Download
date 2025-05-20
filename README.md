@@ -29,7 +29,7 @@ allprojects {
  
 ```
 dependencies {
-	        implementation 'com.github.zhongjhATC:Retrofit2Rxjava2Download:1.0.5'
+	        implementation 'com.github.zhongjhATC:Retrofit2Rxjava2Download:1.0.6'
 	}
 ```
 
@@ -41,61 +41,34 @@ public class MainActivity extends AppCompatActivity implements DownloadListener 
     ```````
     ```````
 
-    // 初始化
-    private DownloadHelper mDownloadHelper = new DownloadHelper("http://www.baseurl.com", this);
+    FileDownloader.downloadFile(url, getApplication().getExternalCacheDir() + File.separator + "/apk/aa/bb",
+            "aaa.png", new DownloadProgressHandler() {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        ```````
-        url = "http://assets.geilicdn.com/channelapk/1000n_shurufa_1.9.6.apk";
-    }
+                @Override
+                public void onProgress(DownloadInfo downloadInfo) {
+                    int progress = downloadInfo.getProgress();
+                    long fileSize = downloadInfo.getFileSize();
+                    long speed = downloadInfo.getSpeed();
+                    long usedTime = downloadInfo.getUsedTime();
+                    tv.setText("下载中 : " + progress + "%" + " 文件大小:" + FileUtils.formatFileSize(fileSize) + " 平均速度：" + FileUtils.formatFileSize(speed) + "/s" + " 下载时间：" + FileUtils.formatTime(usedTime));
+                }
 
-    public void download(View view) {
-        // 调用方法
-        mDownloadHelper.downloadFile(url, Environment.getExternalStorageDirectory() + File.separator + "/apk", "aaa.xlsx");
-    }
+                @Override
+                public void onCompleted(File file) {
+                    Toast.makeText(MainActivity.this, "下载完成：" + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                }
 
+                @Override
+                public void onError(Throwable e) {
+                    Toast.makeText(MainActivity.this, "下载文件异常:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("MainActivity", e.getMessage(), e);
+                }
+            });
+            
     @Override
     protected void onDestroy() {
-        // 销毁
-        mDownloadHelper.dispose();
+        FileDownloader.cancelDownload();
         super.onDestroy();
-    }
-
-    /**
-     * 加载前
-     */
-    @Override
-    public void onStartDownload() {
-
-    }
-
-    /**
-     * 加载中
-     */
-    @Override
-    public void onProgress(int progress) {
-        tv.setText("下载中 : " + progress + "%");
-    }
-
-    /**
-     * 加载后
-     *
-     * @param file 文件
-     */
-    @Override
-    public void onFinishDownload(File file) {
-        tv.setText("下载成功。\n" + file.getAbsolutePath());
-    }
-
-    /**
-     * 加载失败
-     *
-     * @param ex 异常
-     */
-    @Override
-    public void onFail(Throwable ex) {
-        tv.setText("下载失败 : " + ex.getLocalizedMessage());
     }
 
 }
